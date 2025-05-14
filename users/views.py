@@ -50,7 +50,7 @@ def login_view(request):
             return redirect('task_list')
         else:
             messages.error(request, 'Invalid email or password')
-            return redirect('login')
+            return redirect('register')
 
     return render(request, 'login.html')
 
