@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environment
+venv/
+env/
+
+# Django migrations
+*/migrations/*.py
+*/migrations/*.pyc
+
+# SQLite database
+db.sqlite3
+
+# VSCode settings
+.vscode/
+
+# macOS
+.DS_Store
+
+# Environment variables
+.env
+
+# PyCharm
+.idea/
+
+# Coverage reports
+htmlcov/
+coverage.xml
+*.cover
+
+# Logs
+*.log
+
+# Static/media (если хранятся локально, по желанию)
+staticfiles/
+media/
