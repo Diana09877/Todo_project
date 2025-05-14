@@ -1,0 +1,57 @@
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5" id="taskApp">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+  <h2 class="fw-bold">My Tasks</h2>
+  <p class="text-muted">You are logged in as <strong>{{ request.user.email }}</strong></p>
+   <a href="{% url 'logout' %}" class="btn btn-danger">Logout</a>
+
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <form method="get" class="d-flex" style="gap: 10px;">
+      <input type="text" name="search" value="{{ request.GET.search }}" placeholder="Search..." class="form-control">
+      <select name="filter" class="form-select">
+        <option value="all" {% if request.GET.filter == 'all' %}selected{% endif %}>All</option>
+        <option value="done" {% if request.GET.filter == 'done' %}selected{% endif %}>Completed</option>
+        <option value="undone" {% if request.GET.filter == 'undone' %}selected{% endif %}>Uncompleted</option>
+      </select>
+      <button class="btn btn-outline-secondary">Apply</button>
+    </form>
+  </div>
+
+  <div class="list-group">
+      <form method="post" class="d-flex" style="gap: 10px;">
+      {% csrf_token %}
+      <input type="text" name="title" placeholder="New task..." class="form-control" required>
+      <button class="btn btn-primary">Add</button>
+    </form>
+    {% for task in tasks %}
+      <div class="list-group-item d-flex justify-content-between align-items-center animate__animated animate__fadeIn">
+        <div>
+          {% if task.completed %}
+            <s>{{ task.title }}</s>
+          {% else %}
+            {{ task.title }}
+          {% endif %}
+        </div>
+        <div class="btn-group">
+          <a href="{% url 'toggle_task' task.id %}" class="btn btn-sm btn-outline-success">
+            {% if task.completed %} Undo {% else %} ✓ {% endif %}
+          </a>
+          <a href="{% url 'delete_task' task.id %}" class="btn btn-sm btn-outline-danger"> x </a>
+        </div>
+      </div>
+    {% empty %}
+      <p class="text-muted">No tasks found.</p>
+    {% endfor %}
+  </div>
+
+  <div class="mt-4 text-end text-muted">
+    Completed: {{ done_count }} | Remaining: {{ todo_count }}
+  </div>
+</div>
+{% endblock %}
