@@ -6,6 +6,10 @@ from .models import Task
 
 @login_required
 def task_list(request):
+    """
+    Выводит список задач пользователя с возможностью добавления,
+    поиска и фильтрации задач.
+    """
     tasks = Task.objects.filter(user=request.user)
 
     if request.method == 'POST':
@@ -13,9 +17,11 @@ def task_list(request):
         if not title:
             messages.error(request, "Task name can't be empty")
             return redirect('task_list')
+
         Task.objects.create(title=title, user=request.user)
         return redirect('task_list')
 
+    # Обработка поиска и фильтра
     search = request.GET.get('search', '')
     filter_type = request.GET.get('filter', 'all')
 
@@ -34,17 +40,26 @@ def task_list(request):
         'done_count': Task.objects.filter(user=request.user, completed=True).count(),
         'todo_count': Task.objects.filter(user=request.user, completed=False).count(),
     }
+
     return render(request, 'task_list.html', context)
+
 
 @login_required
 def toggle_task_view(request, task_id):
+    """
+    Переключение статуса выполнения задачи.
+    """
     task = get_object_or_404(Task, id=task_id, user=request.user)
     task.completed = not task.completed
     task.save()
     return redirect('task_list')
 
+
 @login_required
 def delete_task_view(request, task_id):
+    """
+    Удаление задачи пользователя.
+    """
     task = get_object_or_404(Task, id=task_id, user=request.user)
     task.delete()
     return redirect('task_list')
