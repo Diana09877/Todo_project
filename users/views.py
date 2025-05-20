@@ -7,9 +7,7 @@ User = get_user_model()
 
 
 def register_view(request):
-    """
-    Обработка регистрации пользователя.
-    """
+    """Регистрация пользователя"""
     if request.method == 'POST':
         email = request.POST.get('email')
         first_name = request.POST.get('first_name')
@@ -38,27 +36,24 @@ def register_view(request):
 
 
 def login_view(request):
-    """
-    Обработка входа пользователя.
-    """
+    """Вход пользователя"""
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
+
         user = authenticate(request, email=email, password=password)
 
-        if user is not None:
+        if user:
             login(request, user)
             return redirect('task_list')
 
         messages.error(request, 'Неверный email или пароль')
-        return redirect('register')
+        return redirect('login')  # здесь раньше было 'register', но должно быть 'login'
 
     return render(request, 'login.html')
 
 
 def logout_view(request):
-    """
-    Выход пользователя из системы.
-    """
+    """Выход из аккаунта"""
     logout(request)
     return redirect('login')

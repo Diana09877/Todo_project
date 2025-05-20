@@ -3,9 +3,7 @@ from django.conf import settings
 
 
 class Task(models.Model):
-    """
-    Модель задачи, связанной с пользователем.
-    """
+    """Задача, принадлежащая пользователю"""
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -15,4 +13,5 @@ class Task(models.Model):
     completed = models.BooleanField(default=False)
 
     def __str__(self):
+        """Возвращает название задачи"""
         return self.title

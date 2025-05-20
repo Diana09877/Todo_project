@@ -1,23 +1,17 @@
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 
 
 class CustomUserManager(BaseUserManager):
-    """
-    Менеджер для модели пользователя с email в качестве уникального идентификатора.
-    """
+    """Менеджер пользователей с email."""
 
     def create_user(self, email, first_name, last_name, password=None):
-        """
-        Создание обычного пользователя.
-        """
+        """Создать обычного пользователя."""
         if not email:
-            raise ValueError('Email обязателен')
-
-        email = self.normalize_email(email)
+            raise ValueError('Укажите email')
         user = self.model(
-            email=email,
+            email=self.normalize_email(email),
             first_name=first_name,
             last_name=last_name,
         )
@@ -26,15 +20,8 @@ class CustomUserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, first_name, last_name, password):
-        """
-        Создание суперпользователя.
-        """
-        user = self.create_user(
-            email=email,
-            first_name=first_name,
-            last_name=last_name,
-            password=password
-        )
+        """Создать суперпользователя."""
+        user = self.create_user(email, first_name, last_name, password)
         user.is_staff = True
         user.is_superuser = True
         user.save(using=self._db)
@@ -42,12 +29,10 @@ class CustomUserManager(BaseUserManager):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    """
-    Пользовательская модель пользователя, использующая email вместо username.
-    """
+    """Пользователь с авторизацией по email."""
     email = models.EmailField(unique=True)
-    first_name = models.CharField(max_length=150, default='')
-    last_name = models.CharField(max_length=150, default='')
+    first_name = models.CharField(max_length=150)
+    last_name = models.CharField(max_length=150)
     date_joined = models.DateTimeField(default=timezone.now)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
